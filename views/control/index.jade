@@ -16,9 +16,17 @@ block body
                         .button(bk-click="after_name()") Next
                 .stage.info.time(ng-show='stage == "info time"')
                     h1 Ready?
-                    h2.spaced You'll have 60 seconds to record your message. Click the "more time" button if you need it.
+                    h2.spaced You'll have {{(recording_allowance / 1000).toFixed(0)}} seconds to record your message. You'll be given a chance to add more time.
                     .centerer
                         .button(bk-click="record(true)") Start Recording!
+                .stage.recording(ng-show='stage == "recording"')
+                    .indicator
+                        .fill(ng-style="{'height': (timepercent * 100) + '%'}")
+                        .numero
+                    .stop(bk-click="stop_recording()") push here to stop
+                .stage.stopped(ng-show='stage == "stopped"')
+                    h1 All done!
+                    p Thanks <b>{{name}}</b> for leaving your message. Feel free to record as many times as you like.
                 .stage.info.note(ng-show='stage == "info note"')
                     h1 Add a note?
                     h4 (optional, 100 characters max)

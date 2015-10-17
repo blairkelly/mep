@@ -1,6 +1,7 @@
 extends ../layouts/main
 
 block body
+    .dingboat(style="padding-bottom: 25px; white-space: pre-wrap;") #{photographs_stringified}
     .surface.bg-tb.showing(class="tbid-#{thoughtbubble_id}")
     #tb_id(data-thoughtbubble_id="#{thoughtbubble_id}")
     .surface.thought_bubble.buffer(class="tbid-#{thoughtbubble_id}")

@@ -1,0 +1,9 @@
+extends ../layouts/main
+
+block body
+    .container-control(ng-app="mepApp" ng-controller="controlController")
+        .button.start_recording(bk-click="start_recording()") Sexy Bitch
+
+
+//-block pagespecific_scripts
+    script(src='/scripts/slideshow.js', type="text/javascript", charset="UTF-8")

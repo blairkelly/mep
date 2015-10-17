@@ -57,8 +57,17 @@ var resources = app.resources = {
 resources.javascripts.push(
     '/socket.io/socket.io.js',
     '/scripts/lib/jquery.min.js',
+    '/scripts/lib/angular.min.js',
+    '/scripts/lib/angular-sanitize.min.js',
     '/scripts/lib/moment.js',
-    '/scripts/scripts.js'
+    '/scripts/scripts.js',
+    '/scripts/controllers/control.js',
+    '/scripts/directives/bkTouch.js',
+    '/scripts/filters/numberAbbreviation.js',
+    '/scripts/filters/time.js',
+    '/scripts/filters/tweets.js',
+    '/scripts/services/control.js',
+    '/scripts/init.js'
 );
 
 app.mainMiddleware = function mainMiddleware (req, res, next) {

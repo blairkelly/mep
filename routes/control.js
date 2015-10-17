@@ -8,16 +8,6 @@ var transferring = false;
 var mysql = db.mysql;
 var io = app.io;
 
-io.on('connection', function (socket) {
-    console.log("Socket connected.");
-
-    socket.emit('welcome', {message: "M E P"});
-    
-    socket.on('disconnect', function () {
-        console.log('socket disconnected');
-    });
-});
-
 var get_media_list = function (cb) {
     request({ 
             method: 'GET',
@@ -143,17 +133,23 @@ app.post('/api/control/record', function (req, res, next) {
                                     }
                                     console.log("successfully deleted media from camera");
                                     transferring = false;
+                                    io.sockets.emit('message', {finished_transfer: true})
                                 });
                             });
                         });
                     });
-                }, 200);
+                }, 5000);
             }
         }
     );
 });
 
-
+app.get('/api/control/is_recording', function (req, res, next) {
+    if (transferring) {
+        return res.send('still transferring'); //unavailable
+    }
+    res.send('done transferring');
+});
 
 setInterval(function () {
     request({ 
@@ -169,4 +165,4 @@ setInterval(function () {
             }
         }
     );
-}, 5000)
+}, 3000)

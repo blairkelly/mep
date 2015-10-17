@@ -177,6 +177,16 @@ body {
             background-color: rgba(0, 0, 0, 0.7);
         }
     }
+    &.transition {
+        >.bg {
+            opacity: 0.2;
+        }
+
+        .plate {
+            margin-top: 100px;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+    }
     &.info {
         >.bg {
             opacity: 0.35;
@@ -225,6 +235,22 @@ body {
                 left: 0;
                 background-color: crimson;
                 width: 100%;
+            }
+
+            .tap_note_holder {
+                position: absolute;
+                width: 100%;
+                top: 0;
+                left: 0;
+                height: 0;
+            }
+            .tap_note {
+                position: absolute;
+                bottom: 15px;
+                left: 0;
+                color: #fff;
+                width: 100%;
+                text-align: center;
             }
         }
         .stop {

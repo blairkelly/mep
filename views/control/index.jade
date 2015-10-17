@@ -16,18 +16,22 @@ block body
                         .button(bk-click="after_name()") Next
                 .stage.info.time(ng-show='stage == "info time"')
                     h1 Ready?
-                    h2.spaced You'll have {{(recording_allowance / 1000).toFixed(0)}} seconds to record your message. You'll be given a chance to add more time.
+                    h2.spaced You'll have {{(recording_allowance / 1000).toFixed(0)}} seconds to record your message.
                     .centerer
                         .button(bk-click="record(true)") Start Recording!
                 .stage.recording(ng-show='stage == "recording"')
                     .indicator
                         .fill(ng-style="{'height': (timepercent * 100) + '%'}")
-                        .numero
+                            .tap_note_holder(ng-show='timepercent < add_ceiling')
+                                .tap_note(bk-click="addtime()" ng-class="timepercent < 0.25 ? 'shake shake-constant' : ''") tap for more time
                     .stop(bk-click="stop_recording()") push here to stop
                 .stage.stopped(ng-show='stage == "stopped"')
                     h1 All done!
                     p Thanks <b>{{name}}</b> for leaving your message. Feel free to record as many times as you like.
-                .stage.info.note(ng-show='stage == "info note"')
+                .stage.transition(ng-show='stage == "transition"')
+                    h1 Transferring
+                    p Still beaming the last video onto the mothership...
+                //-.stage.info.note(ng-show='stage == "info note"')
                     h1 Add a note?
                     h4 (optional, 100 characters max)
                     input.note(type="text" placeholder="Tap Here" maxlength="100" ng-model="note" bk-enter="after_note()")

@@ -81,6 +81,20 @@ var io = app.io = require('socket.io')(server);
 server.listen(process.env.PORT);
 console.log("Listening on ", process.env.PORT);
 
+io.on('connection', function (socket) {
+    console.log("Socket connected.");
+
+    socket.emit('welcome', {message: "M E P"});
+
+    socket.on('control', function (data) {
+        console.log('hi there control!', data);
+    });
+    
+    socket.on('disconnect', function () {
+        console.log('socket disconnected');
+    });
+});
+
 module.exports = app; // so it is available to the items below.
 
 find.fileSync(/\.js$/, __dirname + '/routes').forEach(function (route_file) {

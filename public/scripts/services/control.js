@@ -12,5 +12,9 @@ angular.module("controlService", [])
         http.post('/api/control/record', data).error(callback).then(callback);
     }
 
+    exports.is_recording = function (callback) {
+        http.get('/api/control/is_recording').error(callback).then(callback);
+    }
+
     return exports;
 }])

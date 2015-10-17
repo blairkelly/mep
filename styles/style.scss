@@ -52,7 +52,7 @@ body {
     }
 
     .note {
-        //display: none;
+        display: none;
         position: absolute;
         top: 10px;
         font-weight: 600;
@@ -60,7 +60,7 @@ body {
     }
 
     &.photograph {
-        background-size: auto 75%;
+        background-size: contain;
     }
     &.buffer {
         .note {

@@ -3,7 +3,7 @@ console.log("slideshow.js");
 var photographs = [];
 var current_image_index = 0;
 var img_transition_time = 1100;
-var img_display_time = 5000;
+var img_display_time = 9000;
 
 var load_image = function (callback) {
     var origin_path = "/images/photographs/"

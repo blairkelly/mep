@@ -6,10 +6,9 @@
 }
 
 body {
-    background-color: #123;
     color: #fff;
     font-size: 16px;
-    height: 100%;
+    min-height: 100vh;
     width: 100%;
 
     font-family: 'Open Sans' !important;
@@ -20,7 +19,7 @@ body {
 .supercontainer {
     background: #000;
     width: 100%;
-    height: 100%;
+    min-height: 100vh;
     position: relative;
     overflow: hidden;
 
@@ -38,9 +37,9 @@ body {
     top: 0;
     left: 0;
     opacity: 0;
+    min-height: 100vh;
+    width: 100%;
 
-    //background-image: url(/images/haworth-logo.png);
-    background-size: 42%;
     background-color: #000;
     background-position: center center;
     background-repeat: no-repeat;
@@ -53,33 +52,15 @@ body {
     }
 
     .note {
-        display: none;
+        //display: none;
         position: absolute;
         top: 10px;
         font-weight: 600;
         font-size: 40px;
     }
-    &.bg-tb, &.thought_bubble {
-        background-color: #000;
-        background-size: contain;
-        &.tbid-0 {
-            background-size: 420px;
-        }
-        &.tbid-1 {
-            background-size: 456px;
-        }
-    }
-    &.bg-tb {
-        //background-image: url(/images/_welcome.png);
-        &.tbid-0 {
-            //background-image: url(/images/thoughtbubbles/_welcome.png);
-        }
-        &.tbid-1 {
-            //background-image: url(/images/thoughtbubbles/_welcome.png);
-        }
-    }
-    &.thought_bubble.latest {
-        background-size: cover;
+
+    &.photograph {
+        background-size: auto 75%;
     }
     &.buffer {
         .note {

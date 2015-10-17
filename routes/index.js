@@ -11,6 +11,7 @@ find.fileSync(/\.(gif|jpg|jpeg|tiff|png)$/i, photographs_folder).forEach(functio
 });
 
 app.get('/', app.mainMiddleware, function (req, res, next) {
+    res.locals.first_photograph = photographs[0];
     res.render('index/index.jade');
 });
 

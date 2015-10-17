@@ -1,11 +1,9 @@
 extends ../layouts/main
 
 block body
-    .surface.bg-tb.showing(class="tbid-#{thoughtbubble_id}")
-    #tb_id(data-thoughtbubble_id="#{thoughtbubble_id}")
-    .surface.thought_bubble.buffer(class="tbid-#{thoughtbubble_id}")
+    .surface.photograph.buffer.showing(style="background-image: url('/images/photographs/#{first_photograph}');")
         .note buffer
-    .surface.thought_bubble.main(class="tbid-#{thoughtbubble_id}")
+    .surface.photograph.main.showing(style="background-image: url('/images/photographs/#{first_photograph}');")
         .note main
 
 block pagespecific_scripts

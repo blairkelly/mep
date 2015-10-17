@@ -32,6 +32,8 @@ var lib = app.lib = {};
 app.lib.mysql = require('./lib/mysql.js');
 
 app.use(morgan('dev'));
+app.set('views', path.join(__dirname + '/views/'));
+app.set('view engine', 'jade');
 app.enable('trust proxy');
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({
@@ -41,8 +43,19 @@ app.use(bodyParser.json());
 app.use(methodOverride());
 app.use(express.static(path.join(__dirname + '/public')));
 
+var resources = app.resources = {
+    stylesheets: {
+        main: {
+            css: '',
+            hash: ''
+        }
+    },
+    javascript: {},
+    javascripts: []
+}
+
 app.mainMiddleware = function mainMiddleware (req, res, next) {
-    //possibly unneeded
+    res.locals.stylesheets = resources.stylesheets;
     next();
 }
 
@@ -50,6 +63,8 @@ var server = http.createServer(app); // start an HTTP server
 var io = require('socket.io')(server);
 server.listen(process.env.PORT);
 console.log("Listening on ", process.env.PORT);
+
+module.exports = app; // so it is available to the items below.
 
 find.fileSync(/\.js$/, __dirname + '/routes').forEach(function (route_file) {
     console.log("Adding route file", route_file);

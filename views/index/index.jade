@@ -1,4 +1,4 @@
-extends ../../layouts/main
+extends ../layouts/main
 
 block body
     .surface.bg-tb.showing(class="tbid-#{thoughtbubble_id}")
@@ -7,9 +7,3 @@ block body
         .note buffer
     .surface.thought_bubble.main(class="tbid-#{thoughtbubble_id}")
         .note main
-
-block pagespecific_scripts
-    script(type="text/javascript")
-        include scripts.js
-    script(type="text/javascript")
-        include comms.js

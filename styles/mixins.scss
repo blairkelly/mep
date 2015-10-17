@@ -1,0 +1,119 @@
+@mixin bodyfont {
+	font-family: 'Open Sans' !important;
+	font-style: normal;
+	font-weight: 400;
+	font-size: 18px;
+}
+@mixin title-font {
+	font-family: 'League Gothic' !important;
+	font-style: normal;
+	font-weight: 400;
+}
+@mixin subtitle-style {
+	font-size: 52px;
+	color: $link-hover-color;
+}
+@mixin subtitle-date-style {
+	margin: -12px 0 0 0;
+	font-size: 13px;
+	color: #999;
+}
+
+@mixin basic-transition($property) {
+	-webkit-transition: $property;
+	-moz-transition: $property;
+	-o-transition: $property;
+	transition: $property;
+
+	-webkit-backface-visibility: hidden;
+	-webkit-perspective: 1000;
+}
+
+@mixin clearfix {
+    zoom: 1;
+    &:before { content: ''; display: block; }
+    &:after { content: ''; display: table; clear: both; }
+}
+
+@mixin border-box {
+	-moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+}
+
+
+@mixin flexbox {
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+@mixin flexbasis($basis) {
+    -webkit-flex-basis: $basis;
+    -moz-flex-basis: $basis;
+    -ms-flex-basis: $basis;
+    flex-basis: $basis;
+}
+
+@mixin flexrow {
+    -webkit-flex-direction: row;
+    -moz-flex-direction: row;
+    -ms-flex-direction: row;
+    flex-direction: row;
+}
+
+@mixin flexcol {
+    -webkit-flex-direction: column;
+    -moz-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+}
+
+@mixin flexrowwrap {
+    -webkit-flex-flow: row wrap;
+    -moz-flex-flow: row wrap;
+    -ms-flex-flow: row wrap;
+    flex-flow: row wrap;
+}
+
+@mixin flex($kabuki) {
+    -webkit-flex: $kabuki;
+    -moz-flex: $kabuki;
+    -ms-flex: $kabuki;
+    flex: $kabuki;
+}
+
+@mixin alignitems($alignment) {
+    -webkit-align-items: $alignment;
+    -moz-align-items: $alignment;
+    //-ms-align-items: $alignment;
+    -ms-flex-align: $alignment;
+    align-items: $alignment;
+}
+
+@mixin justifycontent($justification) {
+    @if $justification == "flex-end" { 
+        -ms-flex-pack: end;
+    }
+    @if $justification != "flex-end" {
+        -ms-flex-pack: $justification;
+    }
+    -webkit-justify-content: $justification;
+    -moz-justify-content: $justification;
+    -ms-justify-content: $justification;
+    justify-content: $justification;
+}
+
+@mixin order($wadookles) {
+    -webkit-order: $wadookles;
+    -moz-order: $wadookles;
+    -ms-order: $wadookles;
+    order: $wadookles;
+}
+
+@mixin transform($trans) {
+    -webkit-transform: $trans;
+    -moz-transform: $trans;
+    -o-transform: $trans;
+    -ms-transform: $trans;
+    transform: $trans;
+}

@@ -52,17 +52,19 @@ delete_all_media_on_camera(function (err) {
 var get_video = function (directory, filename) {
     console.log("getting", directory, filename);
 
-    var filedest = path.resolve(__dirname + '/../public/videos/' + directory + '-' + filename);
+    var destname = directory + '-' + filename;
+    var filedest = path.resolve(__dirname + '/../public/videos/' + destname);
 
-    return console.log(filedest);
-
-    request.get('http://mysite.com/doodle.png')
+    var stream = request.get('http://10.5.5.9:8080/videos/DCIM/' + directory + '/' + filename)
     .on('error', function (err) {
         console.log('error getting video from camera', err)
     })
-    .pipe(fs.createWriteStream('doodle.png'))
+    .pipe(fs.createWriteStream(filedest))
 
-    transferring = false;
+    stream.on('finish', function () { 
+        console.log("Presumably finished...");
+        transferring = false;
+    });
 }
 
 app.get('/control', app.mainMiddleware, function (req, res, next) {

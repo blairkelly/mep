@@ -6,6 +6,17 @@ var db = app.lib.mysql;
 var recording = false;
 var transferring = false;
 var mysql = db.mysql;
+var io = app.io;
+
+io.on('connection', function (socket) {
+    console.log("Socket connected.");
+
+    socket.emit('welcome', {message: "M E P"});
+    
+    socket.on('disconnect', function () {
+        console.log('socket disconnected');
+    });
+});
 
 var get_media_list = function (cb) {
     request({ 

@@ -62,12 +62,25 @@ angular.module('controlController', [])
         }
     }
 
-    /*
-    scope.after_note = function () {
-        $('input.note').blur();
-        scope.stage = 'info_public';
+    var add_socket_listeners = function () {
+        console.log('socket connected!');
+        
+        socket.on('welcome', function (data) {
+            console.log(data.message);
+        });
+        
+        socket.on('disconnect', function () {
+            console.log('socket disconnected. removing event listeners.');
+            socket.removeAllListeners();
+            socket.on('connect', function () {
+                add_socket_listeners();
+            });
+        });
     }
-    */
+
+    socket.on('connect', function () {
+        add_socket_listeners();
+    });
 
     console.log("loaded controlController");
 }])

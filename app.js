@@ -25,7 +25,6 @@ var methodOverride = require('method-override');
 var path = require('path');
 var find = require('find');  //was specified for route, but not in registry.
 var app = express();           // start Express framework
-var io = app.io = require('socket.io')();
 
 console.log("Building library...");
 var lib = app.lib = {};
@@ -78,7 +77,7 @@ app.mainMiddleware = function mainMiddleware (req, res, next) {
 }
 
 var server = http.createServer(app); // start an HTTP server
-var io = require('socket.io')(server);
+var io = app.io = require('socket.io')(server);
 server.listen(process.env.PORT);
 console.log("Listening on ", process.env.PORT);
 

@@ -1,6 +1,7 @@
 angular.module('controlController', [])
 .controller('controlController', ['$rootScope', '$scope', 'Control', function (rootScope, scope, Control) {
     scope.stage = 'start';
+    scope.name = '';
 
     scope.record = function (toggle) {
         Control.record({toggle: toggle}, function (response) {
@@ -16,11 +17,13 @@ angular.module('controlController', [])
     }
 
     scope.start = function () {
-        scope.stage = 'info';
+        scope.stage = 'info_name';
     }
 
     scope.after_name = function () {
-        console.log("hi");
+        if (scope.name && scope.name.length > 0) {
+            scope.stage = 'info_note';
+        }
     }
 
     console.log("loaded controlController");

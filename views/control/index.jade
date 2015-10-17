@@ -9,9 +9,20 @@ block body
                 .stage.start(ng-show='stage == "start"')
                     h1 Record a video for Marie-Eve and Scott!
                     .startbutton(bk-click="start()") Start!
-                .stage.info.name(ng-show='stage == "info_name"')
+                .stage.info.name(ng-show='stage == "info name"')
                     h1 Who's recording?
                     input.name(type="text" placeholder="Tap Here" maxlength="25" ng-model="name" bk-enter="after_name()")
+                    .centerer
+                        .button(bk-click="after_name()") Next
+                .stage.info.time(ng-show='stage == "info time"')
+                    h1 Ready?
+                    h2.spaced You'll have 60 seconds to record your message. Click the "more time" button if you need it.
+                    .centerer
+                        .button(bk-click="record(true)") Start Recording!
+                .stage.info.note(ng-show='stage == "info note"')
+                    h1 Add a note?
+                    h4 (optional, 100 characters max)
+                    input.note(type="text" placeholder="Tap Here" maxlength="100" ng-model="note" bk-enter="after_note()")
                     .centerer
                         .button(bk-click="after_name()") Next
 

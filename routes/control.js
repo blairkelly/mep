@@ -8,6 +8,28 @@ var transferring = false;
 var mysql = db.mysql;
 var io = app.io;
 
+console.log("Serial address: " + process.env.SERIAL_ADDRESS);
+
+
+var serialport = require("serialport"),     // include the serialport library
+    SerialPort = serialport.SerialPort,      // make a local instance of serial
+    serialData = {};                    // object to hold what goes out to the client
+
+
+var sport = new SerialPort(process.env.SERIAL_ADDRESS, { 
+    baudrate: 57600,
+    // look for return and newline at the end of each data packet:
+    parser: serialport.parsers.readline("\r\n") 
+});
+
+sport.on("open", function () {
+    var message = null;
+    console.log('opened serial port');
+
+    sport.write('p0\r');
+});
+
+
 var get_media_list = function (cb) {
     request({ 
             method: 'GET',
@@ -79,69 +101,73 @@ app.post('/api/control/record', function (req, res, next) {
         return res.sendStatus(503); //unavailable
     }
     var toggle = req.body.toggle ? '1' : '0';
-    request({ 
-            method: 'GET',
-            uri: 'http://10.5.5.9/gp/gpControl/command/shutter?p=' + toggle,
-        },
-        function (error, response, body) {
-            if (error) {
-                console.log('error telling the camera to change recording state', toggle, error);
-                return res.sendStatus(500);
-            }
-            if (response.statusCode != 200) {
-                console.log('non-200 status code', response.statusCode);
-                return res.sendStatus(500);
-            }
-            
-            res.sendStatus(200);
+    sport.write('p' + toggle + '\r');
 
-            if (req.body.toggle) {
-                recording = true;
-            }
-            else {
-                recording = false;
-                transferring = true;
-                setTimeout(function () {
-                    get_media_list(function (err, result) {
-                        if (err) {
-                            return console.log("problem getting media list");
-                        }
-                        console.log("got media list: ");
-                        var parsed_result = JSON.parse(result);
-                        var directory = parsed_result.media[0].d;
-                        var files = parsed_result.media[0].fs;
-                        var filename = files[0].n;
-                        var ls = files[0].ls;
-                        console.log(files);
-                        get_video(directory, filename, function (err, destname) {
+    setTimeout(function () {
+        request({ 
+                method: 'GET',
+                uri: 'http://10.5.5.9/gp/gpControl/command/shutter?p=' + toggle,
+            },
+            function (error, response, body) {
+                if (error) {
+                    console.log('error telling the camera to change recording state', toggle, error);
+                    return res.sendStatus(500);
+                }
+                if (response.statusCode != 200) {
+                    console.log('non-200 status code', response.statusCode);
+                    return res.sendStatus(500);
+                }
+                
+                res.sendStatus(200);
+
+                if (req.body.toggle) {
+                    recording = true;
+                }
+                else {
+                    recording = false;
+                    transferring = true;
+                    setTimeout(function () {
+                        get_media_list(function (err, result) {
                             if (err) {
-                                return console.log("error getting video", err);
+                                return console.log("problem getting media list");
                             }
-                            console.log("appear to have successfully downloaded the video, now store the info in mysql");
-                            var username = mysql.escape(req.body.username);
-                            console.log('thanks ', username)
-
-                            var query = 'INSERT INTO mep (filename, username, ls) VALUES(\'' + destname + '\', ' + username + ', ' + ls + ')';
-                            db.query(query, function (err, result) {
+                            console.log("got media list: ");
+                            var parsed_result = JSON.parse(result);
+                            var directory = parsed_result.media[0].d;
+                            var files = parsed_result.media[0].fs;
+                            var filename = files[0].n;
+                            var ls = files[0].ls;
+                            console.log(files);
+                            get_video(directory, filename, function (err, destname) {
                                 if (err) {
-                                    console.log("ERROR creating video entry ", destname, username, ls, err);
-                                    return cb(err);
+                                    return console.log("error getting video", err);
                                 }
-                                delete_all_media_on_camera(function (err) {
+                                console.log("appear to have successfully downloaded the video, now store the info in mysql");
+                                var username = mysql.escape(req.body.username);
+                                console.log('thanks ', username)
+
+                                var query = 'INSERT INTO mep (filename, username, ls) VALUES(\'' + destname + '\', ' + username + ', ' + ls + ')';
+                                db.query(query, function (err, result) {
                                     if (err) {
-                                        return console.log("error deleting media from camera for the first time", err);
+                                        console.log("ERROR creating video entry ", destname, username, ls, err);
+                                        return cb(err);
                                     }
-                                    console.log("successfully deleted media from camera");
-                                    transferring = false;
-                                    io.sockets.emit('message', {finished_transfer: true})
+                                    delete_all_media_on_camera(function (err) {
+                                        if (err) {
+                                            return console.log("error deleting media from camera for the first time", err);
+                                        }
+                                        console.log("successfully deleted media from camera");
+                                        transferring = false;
+                                        io.sockets.emit('message', {finished_transfer: true})
+                                    });
                                 });
                             });
                         });
-                    });
-                }, 5000);
+                    }, 5000);
+                }
             }
-        }
-    );
+        );
+    }, 2000);
 });
 
 app.get('/api/control/is_recording', function (req, res, next) {

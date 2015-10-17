@@ -6,8 +6,12 @@ boolean USBcommandExecuted = true;
 String usbCommand = "";
 
 void setup() {            //This function gets called when the Arduino starts
+    pinMode(8, OUTPUT);
+    digitalWrite(8, HIGH); //off
     Serial.begin(57600);   //This code sets up the Serial port at 115200 baud rate
 }
+ 
+
 
 void printsbuffer () {
     //print sBuffer
@@ -27,10 +31,10 @@ void addtosbuffer (String param, String value) {
 void delegate(String cmd, int cmdval) {
     if (cmd.equals("p")) {
         if (cmdval == 0) {
-            digitalWrite(7, HIGH); //off
+            digitalWrite(8, HIGH); //off
             addtosbuffer("powerswitchtail", "0");
         } else if (cmdval == 1) {
-            digitalWrite(7, LOW); //ON
+            digitalWrite(8, LOW); //ON
             addtosbuffer("powerswitchtail", "1");
         }
     }
@@ -72,24 +76,7 @@ void serialListen()
     }
 }
 
-void readSensors()
-{
-    int reading = 0;
-    String pin_name = "";
-    for (int f_pin = 0; f_pin < 4; f_pin++) {
-        reading = 0;
-        pin_name = "f" + String( f_pin );
-        for (int i = 0; i < 4; ++i) {
-            reading += analogRead(f_pin);
-            delay(3);
-        }
-        addtosbuffer(pin_name, String( reading / 4 ));
-    }
-    delay(100);
-}
-
 void loop() {             //This function loops while the arduino is powered
     serialListen();
-    readSensors();
     printsbuffer();
 }

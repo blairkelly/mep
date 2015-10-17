@@ -11,7 +11,9 @@ find.fileSync(/\.(gif|jpg|jpeg|tiff|png)$/i, photographs_folder).forEach(functio
 });
 
 app.get('/', app.mainMiddleware, function (req, res, next) {
-    res.locals.photographs = photographs;
-    res.locals.photographs_stringified = JSON.stringify(photographs, null, 6);
     res.render('index/index.jade');
+});
+
+app.get('/photograph_data', function (req, res, next) {
+    res.send({photographs: photographs, photographs_stringified: JSON.stringify(photographs, null, 6)});
 });

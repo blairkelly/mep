@@ -6,6 +6,8 @@
 }
 
 body {
+    position: relative;
+
     color: #fff;
     font-size: 16px;
     min-height: 100vh;
@@ -17,6 +19,7 @@ body {
 }
 
 .supercontainer {
+    position: relative;
     background: #000;
     width: 100%;
     min-height: 100vh;
@@ -88,5 +91,96 @@ body {
     &:hover {
         background-color: #383838;
         color: #eee;
+    }
+}
+
+.container-control {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    font-size: 60px;
+
+    &.start {
+        >.bg {
+            opacity: 0.85;
+        }
+
+        .plate {
+            margin-top: 100px;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+    }
+    &.info {
+        >.bg {
+            opacity: 0.35;
+        }
+
+        .plate {
+            margin-top: 0px;
+            background-color: rgba(0, 0, 0, 0.85);
+        }
+    }
+
+    >.bg {
+        @include basic-transition( opacity 1.0s );
+        width: 100%;
+        min-height: 100vh;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-image: url(/images/photographs/IMG_0043.JPG);
+    }
+
+    input {
+        font-size: 56px;
+        width: 90%;
+        display: block;
+        padding: 10px 15px;
+        margin: 65px auto;
+        text-align: center;
+    }
+
+    .interior {
+        min-height: 100vh;
+        position: relative;
+        @include flexbox;
+        @include alignitems(center);
+        @include justifycontent(center);
+
+        .plate {
+            @include border-radius(12px);
+            @include basic-transition( margin-top 1.0s );
+            padding: 35px 20px;
+            width: 92%;
+            //background-color: rgba(0, 0, 0, 0.6);
+            color: #fff;
+
+            h1 {
+                text-align: center;
+                font-size: 80px;
+            }
+
+            .startbutton {
+                @include flexbox;
+                @include alignitems(center);
+                @include justifycontent(center);
+                border: 6px solid #fff;
+                background-color: crimson;
+                margin: 0 auto;
+                margin-top: 85px;
+                width: 400px;
+                height: 400px;
+                @include border-radius(50%);
+
+                &:active {
+                    background: #fff;
+                    color: crimson;
+                    border-color: crimson;
+                }
+            }
+        }
     }
 }

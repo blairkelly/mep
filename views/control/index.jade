@@ -1,8 +1,17 @@
 extends ../layouts/main
 
 block body
-    .container-control(ng-app="mepApp" ng-controller="controlController")
-        .button.start_recording(bk-click="start_recording()") Sexy Bitch
+    .container-control(ng-app="mepApp" ng-controller="controlController" ng-class='[stage]')
+        .bg
+        .interior
+            //-.button.start_recording(bk-click="recording ? record(false) : record(true)") {{recording ? 'Stop' : 'Start'}}
+            .plate
+                .stage.start(ng-show='stage == "start"')
+                    h1 Record a video for Marie-Eve and Scott!
+                    .startbutton(bk-click="start()") Start!
+                .stage.info.name(ng-show='stage == "info"')
+                    h1 Who's recording?
+                    input.name(type="text" placeholder="Tap Here" maxlength="25" ng-model="name" bk-enter="after_name()")
 
 
 //-block pagespecific_scripts

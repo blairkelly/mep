@@ -12,6 +12,7 @@ requiredModules.push(
 
 //directives
 requiredModules.push(
+    'bkEnter',
     'bkTouch'
 );
 

@@ -8,8 +8,8 @@ angular.module("controlService", [])
     }
     */
 
-    exports.start_recording = function (callback) {
-        http.post('/api/control/start_recording').error(callback).then(callback);
+    exports.record = function (data, callback) {
+        http.post('/api/control/record', data).error(callback).then(callback);
     }
 
     return exports;

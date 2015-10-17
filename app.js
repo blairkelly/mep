@@ -62,6 +62,7 @@ resources.javascripts.push(
     '/scripts/lib/moment.js',
     '/scripts/scripts.js',
     '/scripts/controllers/control.js',
+    '/scripts/directives/bkEnter.js',
     '/scripts/directives/bkTouch.js',
     '/scripts/filters/numberAbbreviation.js',
     '/scripts/filters/time.js',

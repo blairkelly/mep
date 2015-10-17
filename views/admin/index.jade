@@ -1,0 +1,14 @@
+extends ../../layouts/main
+
+block body
+    .surface.admin_panel.showing
+        .button_holder
+            .refreshclients.button Force Refresh
+        .button_holder
+            .sit_down_0.button Sit down, 0.
+        .button_holder
+            .stand_up_0.button Stand up, 0.
+
+block pagespecific_scripts
+    script(type="text/javascript")
+        include scripts.js

@@ -1,0 +1,18 @@
+extends ../../layouts/main
+
+block body
+    .surface.information_page.showing()
+        .info_container
+            .chairs
+                .chair
+                    .fs.fs-0 N
+                    .fs.fs-1 N
+                .chair
+                    .fs.fs-2 N
+                    .fs.fs-3 N
+
+block pagespecific_scripts
+    script(type="text/javascript")
+        include scripts.js
+    script(type="text/javascript")
+        include comms.js

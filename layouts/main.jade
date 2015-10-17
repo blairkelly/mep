@@ -1,0 +1,18 @@
+doctype html
+html(lang="en")
+    head
+        meta(name="apple-mobile-web-app-capable", content="yes")
+        title Haworth Design
+        link(href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,400,300,600', rel='stylesheet' type='text/css')
+        link(rel='stylesheet', href='/styles/reset.css')
+        link(rel='stylesheet', type="text/css", href='/styles/style.css')
+    body()
+        .supercontainer
+            //- .testing
+            //-.surface.bg.showing
+            block body
+    script(src="/socket.io/socket.io.js")
+    script(src="/scripts/jquery/jquery-2.0.3.min.js")
+    script(src="/scripts/scripts.js")
+    block pagespecific_scripts
+    //script(src="/scripts/analytics.js")

@@ -1,0 +1,10 @@
+extends ../../layouts/main
+
+block body
+    .surface.thought_bubble.buffer.showing(class="tbid-#{thoughtbubble_id}", style="background-image: url(/images/thoughtbubble_test.png);")
+
+block pagespecific_scripts
+    script(type="text/javascript")
+        include scripts.js
+    script(type="text/javascript")
+        include comms.js

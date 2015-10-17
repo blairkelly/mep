@@ -26,8 +26,10 @@ var path = require('path');
 var find = require('find');  //was specified for route, but not in registry.
 var app = express();           // start Express framework
 var io = app.io = require('socket.io')();
-//var lib = app.lib = require('./lib');
 
+console.log("Building library...");
+var lib = app.lib = {};
+app.lib.mysql = require('./lib/mysql.js');
 
 app.use(morgan('dev'));
 app.enable('trust proxy');
@@ -49,7 +51,7 @@ var io = require('socket.io')(server);
 server.listen(process.env.PORT);
 console.log("Listening on ", process.env.PORT);
 
-find.fileSync('/\.js$/', __dirname + '/routes').forEach(function (route_file) {
+find.fileSync(/\.js$/, __dirname + '/routes').forEach(function (route_file) {
     console.log("Adding route file", route_file);
     require(route_file);
 });

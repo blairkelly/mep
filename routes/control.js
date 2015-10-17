@@ -2,8 +2,10 @@ var app = module.parent.exports;
 var request = require('request');
 var fs = require('fs');
 var path = require('path');
+var db = app.lib.mysql;
 var recording = false;
 var transferring = false;
+var mysql = db.mysql;
 
 var get_media_list = function (cb) {
     request({ 
@@ -49,7 +51,7 @@ delete_all_media_on_camera(function (err) {
     console.log("successfully deleted media from camera");
 });
 
-var get_video = function (directory, filename) {
+var get_video = function (directory, filename, cb) {
     console.log("getting", directory, filename);
 
     var destname = directory + '-' + filename;
@@ -58,12 +60,12 @@ var get_video = function (directory, filename) {
     var stream = request.get('http://10.5.5.9:8080/videos/DCIM/' + directory + '/' + filename)
     .on('error', function (err) {
         console.log('error getting video from camera', err)
+        return cb(err);
     })
     .pipe(fs.createWriteStream(filedest))
 
     stream.on('finish', function () { 
-        console.log("Presumably finished...");
-        transferring = false;
+        cb(null, destname);
     });
 }
 
@@ -105,11 +107,34 @@ app.post('/api/control/record', function (req, res, next) {
                         }
                         console.log("got media list: ");
                         var parsed_result = JSON.parse(result);
-                        console.log(parsed_result.media);
                         var directory = parsed_result.media[0].d;
                         var files = parsed_result.media[0].fs;
                         var filename = files[0].n;
-                        get_video(directory, filename);
+                        var ls = files[0].ls;
+                        console.log(files);
+                        get_video(directory, filename, function (err, destname) {
+                            if (err) {
+                                return console.log("error getting video", err);
+                            }
+                            console.log("appear to have successfully downloaded the video, now store the info in mysql");
+                            var username = mysql.escape(req.body.username);
+                            console.log('thanks ', username)
+
+                            var query = 'INSERT INTO mep (filename, username, ls) VALUES(\'' + destname + '\', ' + username + ', ' + ls + ')';
+                            db.query(query, function (err, result) {
+                                if (err) {
+                                    console.log("ERROR creating video entry ", destname, username, ls, err);
+                                    return cb(err);
+                                }
+                                delete_all_media_on_camera(function (err) {
+                                    if (err) {
+                                        return console.log("error deleting media from camera for the first time", err);
+                                    }
+                                    console.log("successfully deleted media from camera");
+                                    transferring = false;
+                                });
+                            });
+                        });
                     });
                 }, 200);
             }

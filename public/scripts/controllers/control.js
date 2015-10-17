@@ -2,7 +2,7 @@ angular.module('controlController', [])
 .controller('controlController', ['$rootScope', '$scope', 'Control', function (rootScope, scope, Control) {
     scope.stage = 'start';
     scope.name = '';
-    scope.recording_allowance = 5000; //milliseconds
+    scope.recording_allowance = 60000; //milliseconds
 
 
     var countdown = function () {
@@ -28,7 +28,7 @@ angular.module('controlController', [])
     }
 
     scope.record = function (toggle) {
-        Control.record({toggle: toggle}, function (response) {
+        Control.record({toggle: toggle, username: scope.name}, function (response) {
             if (response.status == 200) {
                 if (toggle) {
                     console.log('recording...');

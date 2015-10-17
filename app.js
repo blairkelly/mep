@@ -54,8 +54,16 @@ var resources = app.resources = {
     javascripts: []
 }
 
+resources.javascripts.push(
+    '/socket.io/socket.io.js',
+    '/scripts/lib/jquery.min.js',
+    '/scripts/lib/moment.js',
+    '/scripts/scripts.js'
+);
+
 app.mainMiddleware = function mainMiddleware (req, res, next) {
     res.locals.stylesheets = resources.stylesheets;
+    res.locals.javascripts = resources.javascripts;
     next();
 }
 

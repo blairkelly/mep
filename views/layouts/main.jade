@@ -10,6 +10,12 @@ html(lang="en")
             //- .testing
             //-.surface.bg.showing
             block body
-    script(src="/socket.io/socket.io.js")
-    script(src="/scripts/lib/jquery.min.js")
-    script(src="/scripts/scripts.js")
+                
+block scripts
+    each script in javascripts
+        script(src=script, type="text/javascript", charset="UTF-8")
+    
+    //-.oldscripts 
+        script(src="/socket.io/socket.io.js")
+        script(src="/scripts/lib/jquery.min.js")
+        script(src="/scripts/scripts.js")

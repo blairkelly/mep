@@ -192,3 +192,23 @@ setInterval(function () {
         }
     );
 }, 3000)
+
+
+var record = require('node-record-lpcm16')
+var fs = require('fs')
+ 
+var file = fs.createWriteStream('test.wav', { encoding: 'binary' })
+ 
+record.start({
+    device: process.env.RECORDING_DEVICE,
+    sampleRate : 44100,
+    threshold     : 0,
+    thresholdStart: 0,
+    thresholdEnd: 0
+}).pipe(file)
+ 
+// Stop recording after three seconds 
+setTimeout(function () {
+    record.stop();
+    console.log("STOPPED");
+}, 15500)

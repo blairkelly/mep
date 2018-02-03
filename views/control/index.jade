@@ -2,12 +2,12 @@ extends ../layouts/main
 
 block body
     .container-control(ng-app="mepApp" ng-controller="controlController" ng-class='[stage]')
-        .bg
+        .bg(style="background-image: url(#{bg_url});")
         .interior
             //-.button.start_recording(bk-click="recording ? record(false) : record(true)") {{recording ? 'Stop' : 'Start'}}
             .plate
                 .stage.start(ng-show='stage == "start"')
-                    h1 Record a video for Marie-Eve and Scott!
+                    h1 Record a video for #{who}!
                     .startbutton(bk-click="start()") Start!
                 .stage.info.name(ng-show='stage == "info name"')
                     h1 Who's recording?

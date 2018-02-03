@@ -11,15 +11,13 @@ var io = app.io;
 console.log("Serial address: " + process.env.SERIAL_ADDRESS);
 
 
-var serialport = require("serialport"),     // include the serialport library
-    SerialPort = serialport.SerialPort,      // make a local instance of serial
-    serialData = {};                    // object to hold what goes out to the client
-
-
-var sport = new SerialPort(process.env.SERIAL_ADDRESS, { 
-    baudrate: 57600,
-    // look for return and newline at the end of each data packet:
-    parser: serialport.parsers.readline("\r\n") 
+const SerialPort = require('serialport');
+const Readline = SerialPort.parsers.Readline;
+const sport = new SerialPort(process.env.SERIAL_ADDRESS);
+const parser = new Readline({delimiter: "\r\n"});
+sport.pipe(parser);
+parser.on('data', function (something1, something2) {
+    console.log('got something', something1, something2)
 });
 
 sport.on("open", function () {
@@ -133,10 +131,12 @@ app.post('/api/control/record', function (req, res, next) {
                             }
                             console.log("got media list: ");
                             var parsed_result = JSON.parse(result);
+                            console.log(parsed_result);
                             var directory = parsed_result.media[0].d;
                             var files = parsed_result.media[0].fs;
                             var filename = files[0].n;
-                            var ls = files[0].ls;
+                            console.log(files[0]);
+                            var size = (files[0].ls >= 0) ? files[0].ls : files[0].s;  //not sure if this is actually the size.
                             console.log(files);
                             get_video(directory, filename, function (err, destname) {
                                 if (err) {
@@ -146,11 +146,11 @@ app.post('/api/control/record', function (req, res, next) {
                                 var username = mysql.escape(req.body.username);
                                 console.log('thanks ', username)
 
-                                var query = 'INSERT INTO mep (filename, username, ls) VALUES(\'' + destname + '\', ' + username + ', ' + ls + ')';
+                                var query = 'INSERT INTO mep (filename, username, size) VALUES(\'' + destname + '\', ' + username + ', ' + size + ')';
                                 db.query(query, function (err, result) {
                                     if (err) {
-                                        console.log("ERROR creating video entry ", destname, username, ls, err);
-                                        return cb(err);
+                                        return console.error("ERROR creating video entry ", destname, username, size, err);
+                                        //return cb(err);
                                     }
                                     delete_all_media_on_camera(function (err) {
                                         if (err) {

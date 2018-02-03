@@ -2,7 +2,7 @@ angular.module('controlController', [])
 .controller('controlController', ['$rootScope', '$scope', 'Control', function (rootScope, scope, Control) {
     scope.stage = 'start';
     scope.name = '';
-    scope.recording_allowance = 30000; //milliseconds
+    scope.recording_allowance = 70000; //milliseconds
     scope.recording = false;
     scope.add_ceiling = scope.add_ceiling_original = 0.80;
 

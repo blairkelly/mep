@@ -73,6 +73,8 @@ resources.javascripts.push(
 app.mainMiddleware = function mainMiddleware (req, res, next) {
     res.locals.stylesheets = resources.stylesheets;
     res.locals.javascripts = resources.javascripts;
+    res.locals.bg_url = process.env.BG_URL || '/images/photographs/ctrlbg.jpg';
+    res.locals.who = process.env.WHO || 'Marie-Eve and Scott';
     next();
 }
 

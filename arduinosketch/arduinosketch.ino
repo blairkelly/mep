@@ -2,13 +2,14 @@
 String sBuffer = "";
 String usbInstructionDataString = "";
 int usbCommandVal = 0;
+int pPin = 8;
 boolean USBcommandExecuted = true;
 String usbCommand = "";
 
 void setup() {            //This function gets called when the Arduino starts
-    pinMode(8, OUTPUT);
-    digitalWrite(8, HIGH); //off
-    Serial.begin(57600);   //This code sets up the Serial port at 115200 baud rate
+    pinMode(pPin, OUTPUT);
+    digitalWrite(pPin, LOW); //off
+    Serial.begin(57600);   //This code sets up the Serial port
 }
  
 
@@ -31,11 +32,11 @@ void addtosbuffer (String param, String value) {
 void delegate(String cmd, int cmdval) {
     if (cmd.equals("p")) {
         if (cmdval == 0) {
-            digitalWrite(8, HIGH); //off
-            addtosbuffer("powerswitchtail", "0");
+            digitalWrite(pPin, LOW); //off
+            addtosbuffer("Power", "OFF");
         } else if (cmdval == 1) {
-            digitalWrite(8, LOW); //ON
-            addtosbuffer("powerswitchtail", "1");
+            digitalWrite(pPin, HIGH); //ON
+            addtosbuffer("Power", "ON");
         }
     }
 }

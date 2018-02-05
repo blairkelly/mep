@@ -7,14 +7,17 @@ var recording = false;
 var transferring = false;
 var mysql = db.mysql;
 var io = app.io;
+var audioRecord = require('node-record-lpcm16');
 
 console.log("Serial address: " + process.env.SERIAL_ADDRESS);
 
+var audioFilesPath = path.resolve(__dirname + '/../public/audio');
+var tempAudioFilePath = path.join(audioFilesPath, 'temp.wav');
 
 const SerialPort = require('serialport');
 const Readline = SerialPort.parsers.Readline;
 const sport = new SerialPort(process.env.SERIAL_ADDRESS);
-const parser = new Readline({delimiter: "\r\n"});
+const parser = new Readline();
 sport.pipe(parser);
 parser.on('data', function (something1, something2) {
     console.log('got something', something1, something2)
@@ -24,9 +27,12 @@ sport.on("open", function () {
     var message = null;
     console.log('opened serial port');
 
-    sport.write('p0\r');
+    //sport.write('p0\r');
 });
 
+setTimeout(function () {
+    //sport.write('p1\r');
+}, 2000);
 
 var get_media_list = function (cb) {
     request({ 
@@ -47,6 +53,8 @@ var get_media_list = function (cb) {
     );
 }
 var delete_all_media_on_camera = function (cb) {
+    console.log("Not deleting");
+    return cb();
     request({ 
             method: 'GET',
             uri: 'http://10.5.5.9/gp/gpControl/command/storage/delete/all',
@@ -78,6 +86,9 @@ var get_video = function (directory, filename, cb) {
     var destname = directory + '-' + filename;
     var filedest = path.resolve(__dirname + '/../public/videos/' + destname);
 
+    console.log("not doing this shit");
+    return cb(null, destname);
+
     var stream = request.get('http://10.5.5.9:8080/videos/DCIM/' + directory + '/' + filename)
     .on('error', function (err) {
         console.log('error getting video from camera', err)
@@ -99,7 +110,19 @@ app.post('/api/control/record', function (req, res, next) {
         return res.sendStatus(503); //unavailable
     }
     var toggle = req.body.toggle ? '1' : '0';
-    sport.write('p' + toggle + '\r');
+    //console.log("toggling", toggle);
+    //sport.write('p' + toggle + '\r');
+
+    var tempAudioFile = fs.createWriteStream(tempAudioFilePath, { encoding: 'binary' });
+
+    audioRecord.start({
+        device: process.env.RECORDING_DEVICE,
+        sampleRate : 44100,
+        silence: '9999.0',
+        threshold     : 0,
+        thresholdStart: 0,
+        thresholdEnd: 0
+    }).pipe(tempAudioFile);
 
     setTimeout(function () {
         request({ 
@@ -108,10 +131,12 @@ app.post('/api/control/record', function (req, res, next) {
             },
             function (error, response, body) {
                 if (error) {
+                    audioRecord.stop();
                     console.log('error telling the camera to change recording state', toggle, error);
                     return res.sendStatus(500);
                 }
                 if (response.statusCode != 200) {
+                    audioRecord.stop();
                     console.log('non-200 status code', response.statusCode);
                     return res.sendStatus(500);
                 }
@@ -124,6 +149,7 @@ app.post('/api/control/record', function (req, res, next) {
                 else {
                     recording = false;
                     transferring = true;
+                    audioRecord.stop();
                     setTimeout(function () {
                         get_media_list(function (err, result) {
                             if (err) {
@@ -131,13 +157,14 @@ app.post('/api/control/record', function (req, res, next) {
                             }
                             console.log("got media list: ");
                             var parsed_result = JSON.parse(result);
-                            console.log(parsed_result);
                             var directory = parsed_result.media[0].d;
                             var files = parsed_result.media[0].fs;
                             var filename = files[0].n;
                             console.log(files[0]);
                             var size = (files[0].ls >= 0) ? files[0].ls : files[0].s;  //not sure if this is actually the size.
-                            console.log(files);
+                            var fileBaseName = filename.split('.')[0];
+                            var newAudioFilePath = path.join(audioFilesPath, fileBaseName + '.wav');
+                            fs.rename(tempAudioFilePath, newAudioFilePath, function () {});
                             get_video(directory, filename, function (err, destname) {
                                 if (err) {
                                     return console.log("error getting video", err);
@@ -152,14 +179,16 @@ app.post('/api/control/record', function (req, res, next) {
                                         return console.error("ERROR creating video entry ", destname, username, size, err);
                                         //return cb(err);
                                     }
-                                    delete_all_media_on_camera(function (err) {
-                                        if (err) {
-                                            return console.log("error deleting media from camera for the first time", err);
-                                        }
-                                        console.log("successfully deleted media from camera");
+                                    setTimeout(function () {
+                                    //delete_all_media_on_camera(function (err) {
+                                        //if (err) {
+                                        //    return console.log("error deleting media from camera for the first time", err);
+                                        //}
+                                        //console.log("successfully deleted media from camera");
                                         transferring = false;
                                         io.sockets.emit('message', {finished_transfer: true})
-                                    });
+                                    //});
+                                    }, 5000);
                                 });
                             });
                         });
@@ -167,7 +196,7 @@ app.post('/api/control/record', function (req, res, next) {
                 }
             }
         );
-    }, 2000);
+    }, 1000);
 });
 
 app.get('/api/control/is_recording', function (req, res, next) {
@@ -191,24 +220,4 @@ setInterval(function () {
             }
         }
     );
-}, 3000)
-
-
-var record = require('node-record-lpcm16')
-var fs = require('fs')
- 
-var file = fs.createWriteStream('test.wav', { encoding: 'binary' })
- 
-record.start({
-    device: process.env.RECORDING_DEVICE,
-    sampleRate : 44100,
-    threshold     : 0,
-    thresholdStart: 0,
-    thresholdEnd: 0
-}).pipe(file)
- 
-// Stop recording after three seconds 
-setTimeout(function () {
-    record.stop();
-    console.log("STOPPED");
-}, 15500)
+}, 3000);

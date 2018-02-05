@@ -16,7 +16,7 @@ block body
                         .button(bk-click="after_name()") Next
                 .stage.info.time(ng-show='stage == "info time"')
                     h1 Ready?
-                    h2.spaced You'll have {{(recording_allowance / 1000).toFixed(0)}} seconds to record your message.
+                    h2.spaced You'll have {{((recording_allowance / 1000)/60).toFixed(0)}} minutes to record your message.
                     .centerer
                         .button(bk-click="record(true)") Start Recording!
                 .stage.recording(ng-show='stage == "recording"')
